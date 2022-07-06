@@ -8,10 +8,10 @@ import { FluxcdObjectSuspendResumeMenuItem } from "./src/fluxcd-object-suspend-r
 export default class FluxCDExtension extends Renderer.LensExtension {
 
   kubeObjectMenuItems = [
-    { kind: "Kustomization", apiVersions: ["kustomize.toolkit.fluxcd.io/v1beta2"], command: 'kustomization' },
+    { kind: "Kustomization", apiVersions: ["kustomize.toolkit.fluxcd.io/v1beta1", "kustomize.toolkit.fluxcd.io/v1beta2"], command: 'kustomization' },
     { kind: "HelmRelease", apiVersions: ["helm.toolkit.fluxcd.io/v2beta1"], command: 'helmrelease' },
-    { kind: "GitRepository", apiVersions: ["source.toolkit.fluxcd.io/v1beta2"], command: 'source git' },
-    { kind: "HelmRepository", apiVersions: ["source.toolkit.fluxcd.io/v1beta2"], command: 'source helm' },
+    { kind: "GitRepository", apiVersions: ["source.toolkit.fluxcd.io/v1beta1", "source.toolkit.fluxcd.io/v1beta2"], command: 'source git' },
+    { kind: "HelmRepository", apiVersions: ["source.toolkit.fluxcd.io/v1beta1", "source.toolkit.fluxcd.io/v1beta2"], command: 'source helm' },
   ].map(el => {
     return {
       kind: el.kind,
@@ -21,12 +21,12 @@ export default class FluxCDExtension extends Renderer.LensExtension {
       }
     }
   }).concat([
-    { kind: "Kustomization", apiVersions: ["kustomize.toolkit.fluxcd.io/v1beta2"] },
+    { kind: "Kustomization", apiVersions: ["kustomize.toolkit.fluxcd.io/v1beta1", "kustomize.toolkit.fluxcd.io/v1beta2"] },
     { kind: "HelmRelease", apiVersions: ["helm.toolkit.fluxcd.io/v2beta1"] },
-    { kind: "GitRepository", apiVersions: ["source.toolkit.fluxcd.io/v1beta2"] },
+    { kind: "GitRepository", apiVersions: ["source.toolkit.fluxcd.io/v1beta1", "source.toolkit.fluxcd.io/v1beta2"] },
     { kind: "HelmChart", apiVersions: ["source.toolkit.fluxcd.io/v1beta1"] },
-    { kind: "HelmChart", apiVersions: ["source.toolkit.fluxcd.io/v1beta2"] },
-    { kind: "HelmRepository", apiVersions: ["source.toolkit.fluxcd.io/v1beta2"] },
+    { kind: "HelmChart", apiVersions: ["source.toolkit.fluxcd.io/v1beta1", "source.toolkit.fluxcd.io/v1beta2"] },
+    { kind: "HelmRepository", apiVersions: ["source.toolkit.fluxcd.io/v1beta1", "source.toolkit.fluxcd.io/v1beta2"] },
   ].map(el => {
     return {
       kind: el.kind,
