@@ -10,18 +10,13 @@ const {
   Navigation,
 } = Renderer;
 
+export interface FluxcdObjectReconcileMenuItemProps extends Renderer.Component.KubeObjectMenuProps<Renderer.K8sApi.KubeObject> {
+  api: Renderer.K8sApi.KubeApi<Renderer.K8sApi.KubeObject>;
+}
 
-export function FluxcdObjectReconcileMenuItem(props: Renderer.Component.KubeObjectMenuProps<Renderer.K8sApi.KubeObject> & { command: string }) {
-  const { object, toolbar, command } = props;
+export function FluxcdObjectReconcileMenuItem(props: FluxcdObjectReconcileMenuItemProps) {
+  const { object, toolbar, api } = props;
   if (!object) return null;
-
-  const sendToTerminal = (command: string) => {
-    Navigation.hideDetails();
-    terminalStore.sendCommand(command, {
-      enter: true,
-      newTab: true,
-    });
-  };
 
   const reconcile = async () => {
     if (!object.metadata.annotations) {
@@ -29,7 +24,7 @@ export function FluxcdObjectReconcileMenuItem(props: Renderer.Component.KubeObje
     }
 
     object.metadata.annotations["reconcile.fluxcd.io/requestedAt"] = new Date().toISOString()
-    await object.update(object);
+    await api.update({ name: object.metadata.name, namespace: object.metadata.namespace }, object)
   };
 
   return (

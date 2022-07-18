@@ -1,38 +1,130 @@
 import { Renderer } from "@k8slens/extensions";
 import React from "react"
-import * as Doodles from 'react-open-doodles'
 
-import { FluxcdObjectReconcileMenuItem } from "./src/fluxcd-object-reconcile-menu-item";
-import { FluxcdObjectSuspendResumeMenuItem } from "./src/fluxcd-object-suspend-resume-menu-item";
+import { FluxcdObjectReconcileMenuItem, FluxcdObjectReconcileMenuItemProps } from "./src/menus/fluxcd-object-reconcile-menu-item";
+import { FluxcdObjectSuspendResumeMenuItem, FluxCdObjectSuspendResumeMenuItemProps } from "./src/menus/fluxcd-object-suspend-resume-menu-item";
+import { FluxCDDashboard } from './src/pages/fluxcd-dashboard'
+import { FluxCDKustomizationDetails } from './src/components/fluxcd-kustomization-details'
+import { Kustomization, kustomizationApi } from './src/k8s/fluxcd/kustomization'
+import { helmReleaseApi } from "./src/k8s/fluxcd/helmrelease";
+import { gitRepositoryApi } from "./src/k8s/fluxcd/gitrepository";
+import { helmRepositoryApi } from "./src/k8s/fluxcd/helmrepository";
+import { helmChartApi } from "./src/k8s/fluxcd/helmchart";
+
+// export class FluxCDAppExtension extends Main.LensExtension {
+//   appMenus = [
+//     {
+//       parentId: "help",
+//       label: "Example item",
+//       click() {
+//         Main.Navigation.navigate("https://k8slens.dev");
+//       }
+//     }
+//   ]
+
+//   trayMenus = [
+//     {
+//       label: "My links",
+//       submenu: [
+//         {
+//           label: "Lens",
+//           click() {
+//             Main.Navigation.navigate("https://k8slens.dev");
+//           }
+//         },
+//         {
+//           type: "separator"
+//         },
+//         {
+//           label: "Lens Github",
+//           click() {
+//             Main.Navigation.navigate("https://github.com/lensapp/lens");
+//           }
+//         }
+//       ]
+//     }
+//   ]
+
+// }
+
+const {
+  Component: {
+    Icon,
+  }
+} = Renderer;
+
+type IconProps = Renderer.Component.IconProps;
+
+export function ExampleIcon(props: IconProps) {
+  return <Icon {...props} material="pages" tooltip={"Hi!"} />;
+}
 
 export default class FluxCDExtension extends Renderer.LensExtension {
+  topBarItems = [
+    {
+      components: {
+        Item: () => (
+          <Icon material="favorite" onClick={() => this.navigate("fluxcd")} />
+        )
+      }
+    }
+  ]
+
+  kubeObjectDetailItems = [{
+    kind: "Kustomization",
+    apiVersions: ["kustomize.toolkit.fluxcd.io/v1beta1", "kustomize.toolkit.fluxcd.io/v1beta2"],
+    priority: 10,
+    components: {
+      Details: (props: Renderer.Component.KubeObjectDetailsProps<Kustomization>) => <FluxCDKustomizationDetails {...props} />
+    }
+  }]
+
+  clusterPages = [
+    {
+      id: "fluxcd", // optional
+      exact: true, // optional
+      components: {
+        Page: () => <FluxCDDashboard extension={this} />,
+      }
+    }
+  ]
+
+  clusterPageMenus = [
+    {
+      target: { pageId: "fluxcd" },
+      title: "FluxCD",
+      components: {
+        Icon: ExampleIcon,
+      }
+    }
+  ]
 
   kubeObjectMenuItems = [
-    { kind: "Kustomization", apiVersions: ["kustomize.toolkit.fluxcd.io/v1beta1", "kustomize.toolkit.fluxcd.io/v1beta2"], command: 'kustomization' },
-    { kind: "HelmRelease", apiVersions: ["helm.toolkit.fluxcd.io/v2beta1"], command: 'helmrelease' },
-    { kind: "GitRepository", apiVersions: ["source.toolkit.fluxcd.io/v1beta1", "source.toolkit.fluxcd.io/v1beta2"], command: 'source git' },
-    { kind: "HelmRepository", apiVersions: ["source.toolkit.fluxcd.io/v1beta1", "source.toolkit.fluxcd.io/v1beta2"], command: 'source helm' },
+    { kind: "Kustomization", apiVersions: ["kustomize.toolkit.fluxcd.io/v1beta1", "kustomize.toolkit.fluxcd.io/v1beta2"], api: kustomizationApi },
+    { kind: "HelmRelease", apiVersions: ["helm.toolkit.fluxcd.io/v2beta1"], api: helmReleaseApi },
+    { kind: "GitRepository", apiVersions: ["source.toolkit.fluxcd.io/v1beta1", "source.toolkit.fluxcd.io/v1beta2"], api: gitRepositoryApi },
+    { kind: "HelmChart", apiVersions: ["source.toolkit.fluxcd.io/v1beta1", "source.toolkit.fluxcd.io/v1beta2"], api: helmChartApi },
+    { kind: "HelmRepository", apiVersions: ["source.toolkit.fluxcd.io/v1beta1", "source.toolkit.fluxcd.io/v1beta2"], api: helmRepositoryApi },
   ].map(el => {
     return {
       kind: el.kind,
       apiVersions: el.apiVersions,
       components: {
-        MenuItem: (props: Renderer.Component.KubeObjectMenuProps<Renderer.K8sApi.KubeObject>) => <FluxcdObjectReconcileMenuItem {...props} command={el.command} />,
+        MenuItem: (props: FluxcdObjectReconcileMenuItemProps) => <FluxcdObjectReconcileMenuItem {...props} api={el.api} />,
       }
     }
   }).concat([
-    { kind: "Kustomization", apiVersions: ["kustomize.toolkit.fluxcd.io/v1beta1", "kustomize.toolkit.fluxcd.io/v1beta2"] },
-    { kind: "HelmRelease", apiVersions: ["helm.toolkit.fluxcd.io/v2beta1"] },
-    { kind: "GitRepository", apiVersions: ["source.toolkit.fluxcd.io/v1beta1", "source.toolkit.fluxcd.io/v1beta2"] },
-    { kind: "HelmChart", apiVersions: ["source.toolkit.fluxcd.io/v1beta1"] },
-    { kind: "HelmChart", apiVersions: ["source.toolkit.fluxcd.io/v1beta1", "source.toolkit.fluxcd.io/v1beta2"] },
-    { kind: "HelmRepository", apiVersions: ["source.toolkit.fluxcd.io/v1beta1", "source.toolkit.fluxcd.io/v1beta2"] },
+    { kind: "Kustomization", apiVersions: ["kustomize.toolkit.fluxcd.io/v1beta1", "kustomize.toolkit.fluxcd.io/v1beta2"], api: kustomizationApi },
+    { kind: "HelmRelease", apiVersions: ["helm.toolkit.fluxcd.io/v2beta1"], api: helmReleaseApi },
+    { kind: "GitRepository", apiVersions: ["source.toolkit.fluxcd.io/v1beta1", "source.toolkit.fluxcd.io/v1beta2"], api: gitRepositoryApi },
+    { kind: "HelmChart", apiVersions: ["source.toolkit.fluxcd.io/v1beta1", "source.toolkit.fluxcd.io/v1beta2"], api: helmChartApi },
+    { kind: "HelmRepository", apiVersions: ["source.toolkit.fluxcd.io/v1beta1", "source.toolkit.fluxcd.io/v1beta2"], api: helmRepositoryApi },
   ].map(el => {
     return {
       kind: el.kind,
       apiVersions: el.apiVersions,
       components: {
-        MenuItem: (props: Renderer.Component.KubeObjectMenuProps<Renderer.K8sApi.KubeObject>) => <FluxcdObjectSuspendResumeMenuItem {...props} />,
+        MenuItem: (props: FluxCdObjectSuspendResumeMenuItemProps) => <FluxcdObjectSuspendResumeMenuItem api={el.api} {...props} />,
       }
     }
   }))
