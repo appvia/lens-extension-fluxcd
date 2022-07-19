@@ -29,7 +29,7 @@ To install open K8s Lens and go to Extensions (CTRL+SHIFT+E or CMD+SHIFT+E), and
 
 or
 
-Click on the following lens:// link [lens://app/extensions/install/@appvia/lens-extension-fluxcd](lens://app/extensions/install/@appvia/lens-extension-fluxcd)
+Click on the following link `lens://app/extensions/install/@appvia/lens-extension-fluxcd`
 
 
 
