@@ -1,11 +1,42 @@
-# Lens "FluxCD" Extension
+# Lens FluxCD Extension
 
-Adds FluxCD actions to Flux resources:
+Add FluxCD support to Lens. https://fluxcd.io/
 
-* Reconcile
-* Suspend/Resume
+The following features are available:
+
+* FluxCD dashboard of Flux Application components (Kustomizations and HelmReleases) and Sources (GitRepositories, HelmRepositories, HelmCharts and Buckets)
+* FluxCD resource menus
+  * Reconcile
+  * Suspend/Resume
+* FluxCD Kustomization details
+
+## Screenshots
+
+Dashboard
+![./docs/images/dashboard.png](./docs/images/dashboard.png)
+
+Details
+![./docs/images/details.png](./docs/images/details.png)
+
+
+Events
+![./docs/images/events.png](./docs/images/events.png)
+
 
 ## Install
+
+To install open K8s Lens and go to Extensions (CTRL+SHIFT+E or CMD+SHIFT+E), and install `@evops/lens-extension-fluxcd`.
+
+or
+
+Click on the following lens:// link [lens://app/extensions/install/lens-certificate-info](lens://app/extensions/install/lens-certificate-info)
+
+
+
+
+## Development
+
+To install extension for development
 
 ```sh
 mkdir -p ~/.k8slens/extensions
@@ -36,7 +67,7 @@ npm run dev
 
 ## Test
 
-Open Lens application and navigate to a cluster. You should see "Hello World" in a menu.
+Open Lens application and navigate to a cluster. You should see "FluxCD" dashboard in a cluster menu.
 
 ## Uninstall
 
