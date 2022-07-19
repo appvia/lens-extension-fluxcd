@@ -1,11 +1,11 @@
 {
-  "name": "@evops/lens-extension-fluxcd",
+  "name": "@appvia/lens-extension-fluxcd",
   "version": "0.0.5",
   "author": "Stanislaw Wozniak",
   "description": "Lens extension for FluxCD",
   "repository": {
     "type": "git",
-    "url": "https://github.com/eu-evops/lens-extension-fluxcd.git",
+    "url": "https://github.com/appvia/lens-extension-fluxcd.git",
     "directory": "fluxcd"
   },
   "engines": {
@@ -38,9 +38,9 @@
     "webpack-cli": "^4.10.0"
   },
   "license": "MIT",
-  "homepage": "https://github.com/eu-evops/lens-extension-fluxcd",
+  "homepage": "https://github.com/appvia/lens-extension-fluxcd",
   "bugs": {
-    "url": "https://github.com/eu-evops/lens-extension-fluxcd/issues"
+    "url": "https://github.com/appvia/lens-extension-fluxcd/issues"
   },
   "keywords": [
     "example",

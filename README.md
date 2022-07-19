@@ -25,7 +25,7 @@ Events
 
 ## Install
 
-To install open K8s Lens and go to Extensions (CTRL+SHIFT+E or CMD+SHIFT+E), and install `@evops/lens-extension-fluxcd`.
+To install open K8s Lens and go to Extensions (CTRL+SHIFT+E or CMD+SHIFT+E), and install `@appvia/lens-extension-fluxcd`.
 
 or
 
@@ -36,11 +36,11 @@ Click on the following lens:// link [lens://app/extensions/install/lens-certific
 
 ## Development
 
-To install extension for development
+To install the extension for development
 
 ```sh
 mkdir -p ~/.k8slens/extensions
-git clone https://github.com/eu-evops/lens-extension-fluxcd.git
+git clone https://github.com/appvia/lens-extension-fluxcd.git
 ln -s $(pwd) ~/.k8slens/extensions/lens-extension-fluxcd
 ```
 
