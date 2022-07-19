@@ -1,6 +1,6 @@
 {
   "name": "@evops/lens-extension-fluxcd",
-  "version": "0.0.3",
+  "version": "0.0.5",
   "author": "Stanislaw Wozniak",
   "description": "Lens extension for FluxCD",
   "repository": {

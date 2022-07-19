@@ -10,6 +10,7 @@ import { helmReleaseApi } from "./src/k8s/fluxcd/helmrelease";
 import { gitRepositoryApi } from "./src/k8s/fluxcd/gitrepository";
 import { helmRepositoryApi } from "./src/k8s/fluxcd/helmrepository";
 import { helmChartApi } from "./src/k8s/fluxcd/helmchart";
+import { bucketApi } from "./src/k8s/fluxcd/bucket";
 
 // export class FluxCDAppExtension extends Main.LensExtension {
 //   appMenus = [
@@ -55,21 +56,11 @@ const {
 
 type IconProps = Renderer.Component.IconProps;
 
-export function ExampleIcon(props: IconProps) {
-  return <Icon {...props} material="pages" tooltip={"Hi!"} />;
+export function FluxCDIcon(props: IconProps) {
+  return <Icon {...props} material="pages" tooltip={"FluxCD Dashboard"} />;
 }
 
 export default class FluxCDExtension extends Renderer.LensExtension {
-  topBarItems = [
-    {
-      components: {
-        Item: () => (
-          <Icon material="favorite" onClick={() => this.navigate("fluxcd")} />
-        )
-      }
-    }
-  ]
-
   kubeObjectDetailItems = [{
     kind: "Kustomization",
     apiVersions: ["kustomize.toolkit.fluxcd.io/v1beta1", "kustomize.toolkit.fluxcd.io/v1beta2"],
@@ -94,7 +85,7 @@ export default class FluxCDExtension extends Renderer.LensExtension {
       target: { pageId: "fluxcd" },
       title: "FluxCD",
       components: {
-        Icon: ExampleIcon,
+        Icon: FluxCDIcon,
       }
     }
   ]
@@ -105,6 +96,7 @@ export default class FluxCDExtension extends Renderer.LensExtension {
     { kind: "GitRepository", apiVersions: ["source.toolkit.fluxcd.io/v1beta1", "source.toolkit.fluxcd.io/v1beta2"], api: gitRepositoryApi },
     { kind: "HelmChart", apiVersions: ["source.toolkit.fluxcd.io/v1beta1", "source.toolkit.fluxcd.io/v1beta2"], api: helmChartApi },
     { kind: "HelmRepository", apiVersions: ["source.toolkit.fluxcd.io/v1beta1", "source.toolkit.fluxcd.io/v1beta2"], api: helmRepositoryApi },
+    { kind: "Bucket", apiVersions: ["source.toolkit.fluxcd.io/v1beta1", "source.toolkit.fluxcd.io/v1beta2"], api: bucketApi },
   ].map(el => {
     return {
       kind: el.kind,
@@ -119,6 +111,7 @@ export default class FluxCDExtension extends Renderer.LensExtension {
     { kind: "GitRepository", apiVersions: ["source.toolkit.fluxcd.io/v1beta1", "source.toolkit.fluxcd.io/v1beta2"], api: gitRepositoryApi },
     { kind: "HelmChart", apiVersions: ["source.toolkit.fluxcd.io/v1beta1", "source.toolkit.fluxcd.io/v1beta2"], api: helmChartApi },
     { kind: "HelmRepository", apiVersions: ["source.toolkit.fluxcd.io/v1beta1", "source.toolkit.fluxcd.io/v1beta2"], api: helmRepositoryApi },
+    { kind: "Bucket", apiVersions: ["source.toolkit.fluxcd.io/v1beta1", "source.toolkit.fluxcd.io/v1beta2"], api: bucketApi },
   ].map(el => {
     return {
       kind: el.kind,

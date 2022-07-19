@@ -6,8 +6,12 @@
 }
 
 .FluxPanels {
-  grid-template-columns: repeat(auto-fill, 400px);
+  grid-template-columns: repeat(auto-fill, 385px);
   justify-content: flex-start;
+}
+
+.floatRight {
+  float: right;
 }
 
 .fluxPanel header {

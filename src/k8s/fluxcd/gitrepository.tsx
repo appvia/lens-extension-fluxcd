@@ -10,7 +10,7 @@ const KubeObjectStore = Renderer.K8sApi.KubeObjectStore;
 export class GitRepository extends KubeObject {
   static readonly kind = "GitRepository";
   static readonly namespaced = true;
-  static readonly apiBase = "/apis/source.toolkit.fluxcd.io/v1beta2/gitrepositories";
+  static readonly apiBase = "/apis/source.toolkit.fluxcd.io/v1beta1/gitrepositories";
 }
 
 export class GitRepositoryApi extends KubeApi<GitRepository> {

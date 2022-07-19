@@ -10,7 +10,7 @@ const KubeObjectStore = Renderer.K8sApi.KubeObjectStore;
 export class Kustomization extends KubeObject {
   static readonly kind = "Kustomization";
   static readonly namespaced = true;
-  static readonly apiBase = "/apis/kustomize.toolkit.fluxcd.io/v1beta2/kustomizations";
+  static readonly apiBase = "/apis/kustomize.toolkit.fluxcd.io/v1beta1/kustomizations";
 }
 
 export class KustomizationApi extends KubeApi<Kustomization> {

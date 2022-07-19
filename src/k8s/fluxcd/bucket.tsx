@@ -9,7 +9,7 @@ const KubeObjectStore = Renderer.K8sApi.KubeObjectStore;
 export class Bucket extends KubeObject {
   static readonly kind = "Bucket";
   static readonly namespaced = true;
-  static readonly apiBase = "/apis/source.toolkit.fluxcd.io/v1beta2/buckets";
+  static readonly apiBase = "/apis/source.toolkit.fluxcd.io/v1beta1/buckets";
 }
 
 export class BucketApi extends KubeApi<Bucket> {

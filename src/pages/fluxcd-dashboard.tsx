@@ -1,8 +1,5 @@
 import { Renderer } from '@k8slens/extensions'
-import { apiManager } from '@k8slens/extensions/dist/src/common/k8s-api/api-manager';
 import { KubeEvent } from '@k8slens/extensions/dist/src/common/k8s-api/endpoints';
-import { KubeJsonApiData } from '@k8slens/extensions/dist/src/common/k8s-api/kube-json-api'
-import { IKubeWatchEvent } from '@k8slens/extensions/dist/src/common/k8s-api/kube-watch-event'
 import { PieChart } from '../components/pie-chart'
 // import type { KubeObjectAge } from '@k8slens/extensions/dist/src/renderer/components/kube-object/age';
 // import type { Link } from "react-router-dom";
@@ -23,19 +20,20 @@ class FluxEventsStore extends Renderer.K8sApi.KubeObjectStore<Renderer.K8sApi.Ku
 
 const fluxEventsStore = new FluxEventsStore();
 
-import { gitRepositoryStore, gitRepositoryApi, GitRepository } from '../k8s/fluxcd/gitrepository'
-import { helmChartStore, helmChartApi, HelmChart } from '../k8s/fluxcd/helmchart'
-import { helmRepositoryStore, helmRepositoryApi, HelmRepository } from '../k8s/fluxcd/helmrepository'
-import { helmReleaseStore, helmReleaseApi, HelmRelease } from '../k8s/fluxcd/helmrelease'
-import { kustomizationStore, kustomizationApi, Kustomization } from '../k8s/fluxcd/kustomization'
-import { bucketStore, bucketApi, Bucket } from '../k8s/fluxcd/bucket'
-import { crdStore, crdApi } from '../k8s/core/crd'
-import { IKubeApiQueryParams } from '@k8slens/extensions/dist/src/common/k8s-api/kube-api';
+import { gitRepositoryStore, GitRepository } from '../k8s/fluxcd/gitrepository'
+import { helmChartStore, HelmChart } from '../k8s/fluxcd/helmchart'
+import { helmRepositoryStore, HelmRepository } from '../k8s/fluxcd/helmrepository'
+import { helmReleaseStore, HelmRelease } from '../k8s/fluxcd/helmrelease'
+import { kustomizationStore, Kustomization, kustomizationApi } from '../k8s/fluxcd/kustomization'
+import { bucketStore, Bucket } from '../k8s/fluxcd/bucket'
+import { crdStore } from '../k8s/core/crd'
+import { FluxcdObjectReconcileMenuItem } from '../menus/fluxcd-object-reconcile-menu-item'
+import { FluxcdObjectSuspendResumeMenuItem } from '../menus/fluxcd-object-suspend-resume-menu-item'
 
 import './fluxcd-dashboard.scss'
-import moment from 'moment';
+
 import { formatDuration } from '../utils';
-import { computed, makeAutoObservable, makeObservable, observable } from 'mobx';
+import { makeObservable } from 'mobx';
 import { observer } from 'mobx-react';
 
 enum columnId {
@@ -213,18 +211,9 @@ export class FluxCDDashboard extends React.Component<{ extension: Renderer.LensE
         <h1>FluxCD Dashboard</h1>
       </header>
 
-      {/* <header className="flex gaps align-center pb-3">
-        <h1>Applications</h1>
-      </header> */}
       <div className="grid flex FluxWorkloads pb-3">
         {this.getChart('Kustomizations', kustomizationStore.items)}
         {this.getChart('Helm releases', helmReleaseStore.items)}
-        {/* </div> */}
-
-        {/* <header className="flex gaps align-center pb-3">
-        <h1>Sources</h1>
-      </header>
-      <div className="grid flex FluxWorkloads pb-3"> */}
 
         {this.getChart('Git Repositories', gitRepositoryStore.items)}
         {this.getChart('Helm Repositories', helmRepositoryStore.items)}
@@ -236,20 +225,23 @@ export class FluxCDDashboard extends React.Component<{ extension: Renderer.LensE
       <div className='grid flex gaps mb-3 FluxPanels'>
         {kustomizationStore.items.map(k => (<div className={['fluxPanel', 'column', getStatusClassName(k)].join(' ')}>
           <header>
-            <h3><a onClick={e => {
-              e.preventDefault();
-              Renderer.Navigation.createPageParam({
-                name: "kube-details",
-                defaultValue: k.selfLink,
-              })
-              Renderer.Navigation.showDetails(k.selfLink);
-            }}>{k.metadata.name}</a></h3>
+            <h3>
+              <a onClick={e => {
+                e.preventDefault();
+                Renderer.Navigation.createPageParam({
+                  name: "kube-details",
+                  defaultValue: k.selfLink,
+                })
+                Renderer.Navigation.showDetails(k.selfLink);
+              }}>{k.metadata.name}</a>
+            </h3>
           </header>
           <article>
             <DrawerItem name="Type">{k.kind}</DrawerItem>
             <DrawerItem name="Source">{k.spec.sourceRef.kind}:{k.spec.sourceRef.name}</DrawerItem>
             <DrawerItem name="Path">{k.spec.path}</DrawerItem>
             <DrawerItem name="Interval">{k.spec.interval}</DrawerItem>
+            <DrawerItem name="Status">{k.status.conditions.find((c: any) => c.type === 'Ready').message}</DrawerItem>
           </article>
         </div>))
         }
@@ -264,6 +256,7 @@ export class FluxCDDashboard extends React.Component<{ extension: Renderer.LensE
               <DrawerItem name="Chart">{h.spec.chart.spec.chart}</DrawerItem>
               <DrawerItem name="Version">{h.spec.chart.spec.version}</DrawerItem>
               <DrawerItem name="Interval">{h.spec.interval}</DrawerItem>
+              <DrawerItem name="Status">{h.status.conditions.find((c: any) => c.type === 'Ready').message}</DrawerItem>
             </article>
           </div>))
         }
@@ -285,7 +278,9 @@ export class FluxCDDashboard extends React.Component<{ extension: Renderer.LensE
           <article>
             <DrawerItem name="Type">{s.kind}</DrawerItem>
             <DrawerItem name="URL">{s.spec.url}</DrawerItem>
+            <DrawerItem name="Ref">{s.spec.ref.branch || s.spec.ref.tag}</DrawerItem>
             <DrawerItem name="Interval">{s.spec.interval}</DrawerItem>
+            <DrawerItem name="Status">{s.status.conditions.find((c: any) => c.type === 'Ready').message}</DrawerItem>
           </article>
         </div>))
         }
@@ -297,6 +292,7 @@ export class FluxCDDashboard extends React.Component<{ extension: Renderer.LensE
             <DrawerItem name="Type">{s.kind}</DrawerItem>
             <DrawerItem name="URL">{s.spec.url}</DrawerItem>
             <DrawerItem name="Interval">{s.spec.interval}</DrawerItem>
+            <DrawerItem name="Status">{s.status.conditions.find((c: any) => c.type === 'Ready').message}</DrawerItem>
           </article>
         </div>))
         }
@@ -306,8 +302,10 @@ export class FluxCDDashboard extends React.Component<{ extension: Renderer.LensE
           </header>
           <article>
             <DrawerItem name="Type">{s.kind}</DrawerItem>
-            <DrawerItem name="URL">{s.spec.url}</DrawerItem>
+            <DrawerItem name="Chart">{s.spec.chart}</DrawerItem>
+            <DrawerItem name="Version">{s.spec.version}</DrawerItem>
             <DrawerItem name="Interval">{s.spec.interval}</DrawerItem>
+            <DrawerItem name="Status">{s.status.conditions.find((c: any) => c.type === 'Ready').message}</DrawerItem>
           </article>
         </div>))
         }
@@ -319,6 +317,7 @@ export class FluxCDDashboard extends React.Component<{ extension: Renderer.LensE
             <DrawerItem name="Type">{s.kind}</DrawerItem>
             <DrawerItem name="URL">{s.spec.url}</DrawerItem>
             <DrawerItem name="Interval">{s.spec.interval}</DrawerItem>
+            <DrawerItem name="Status">{s.status.conditions.find((c: any) => c.type === 'Ready').message}</DrawerItem>
           </article>
         </div>))
         }
