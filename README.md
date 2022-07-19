@@ -29,7 +29,7 @@ To install open K8s Lens and go to Extensions (CTRL+SHIFT+E or CMD+SHIFT+E), and
 
 or
 
-Click on the following lens:// link [lens://app/extensions/install/lens-certificate-info](lens://app/extensions/install/lens-certificate-info)
+Click on the following lens:// link [lens://app/extensions/install/@appvia/lens-extension-fluxcd](lens://app/extensions/install/@appvia/lens-extension-fluxcd)
 
 
 
@@ -67,7 +67,7 @@ npm run dev
 
 ## Test
 
-Open Lens application and navigate to a cluster. You should see "FluxCD" dashboard in a cluster menu.
+Open the Lens application and navigate to a cluster. You should see "FluxCD" dashboard in a cluster menu.
 
 ## Uninstall
 
