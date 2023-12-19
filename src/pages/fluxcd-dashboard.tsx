@@ -207,193 +207,193 @@ export class FluxCDDashboard extends React.Component<{ extension: Renderer.LensE
     }
 
     return <Renderer.Component.TabLayout>
-      <header className="flex gaps align-center pb-3">
-        <h1>FluxCD Dashboard</h1>
-      </header>
-
-      <div className="grid flex FluxWorkloads pb-3">
-        {this.getChart('Kustomizations', kustomizationStore.items)}
-        {this.getChart('Helm releases', helmReleaseStore.items)}
-
-        {this.getChart('Git Repositories', gitRepositoryStore.items)}
-        {this.getChart('Helm Repositories', helmRepositoryStore.items)}
-        {this.getChart('Helm Charts', helmChartStore.items)}
-        {this.getChart('Buckets', bucketStore.items)}
-      </div>
-
-      <h2>Applications</h2>
-      <div className='grid flex gaps mb-3 FluxPanels'>
-        {kustomizationStore.items.map(k => (<div className={['fluxPanel', 'column', getStatusClassName(k)].join(' ')}>
-          <header>
-            <h3>
-              <a onClick={e => {
-                e.preventDefault();
-                Renderer.Navigation.createPageParam({
-                  name: "kube-details",
-                  defaultValue: k.selfLink,
-                })
-                Renderer.Navigation.showDetails(k.selfLink);
-              }}>{k.metadata.name}</a>
-            </h3>
-          </header>
-          <article>
-            <DrawerItem name="Type">{k.kind}</DrawerItem>
-            <DrawerItem name="Source">{k.spec.sourceRef.kind}:{k.spec.sourceRef.name}</DrawerItem>
-            <DrawerItem name="Path">{k.spec.path}</DrawerItem>
-            <DrawerItem name="Interval">{k.spec.interval}</DrawerItem>
-            <DrawerItem name="Status">{k.status.conditions.find((c: any) => c.type === 'Ready').message}</DrawerItem>
-          </article>
-        </div>))
-        }
-        {
-          helmReleaseStore.items.map(h => (<div className={['fluxPanel', 'column', getStatusClassName(h)].join(' ')}>
-            <header>
-              <h3><a onClick={e => { e.preventDefault(); Renderer.Navigation.showDetails(h.selfLink) }}>{h.metadata.name}</a></h3>
+        <div className="fluxContent">
+            <header className="flex gaps align-center pb-3">
+                <h1>FluxCD Dashboard</h1>
             </header>
-            <article>
-              <DrawerItem name="Type">{h.kind}</DrawerItem>
-              <DrawerItem name="Source">{h.spec.chart.spec.sourceRef.kind}:{h.spec.chart.spec.sourceRef.name}</DrawerItem>
-              <DrawerItem name="Chart">{h.spec.chart.spec.chart}</DrawerItem>
-              <DrawerItem name="Version">{h.spec.chart.spec.version}</DrawerItem>
-              <DrawerItem name="Interval">{h.spec.interval}</DrawerItem>
-              <DrawerItem name="Status">{h.status.conditions.find((c: any) => c.type === 'Ready').message}</DrawerItem>
-            </article>
-          </div>))
-        }
-      </div >
 
-      <h2>Sources</h2>
-      <div className='grid flex gaps mb-3 FluxPanels'>
-        {gitRepositoryStore.items.map(s => (<div className={['fluxPanel', 'column', getStatusClassName(s)].join(' ')}>
-          <header>
-            <h3><a onClick={e => {
-              e.preventDefault();
-              Renderer.Navigation.createPageParam({
-                name: "kube-details",
-                defaultValue: s.selfLink,
-              })
-              Renderer.Navigation.showDetails(s.selfLink);
-            }}>{s.metadata.name}</a></h3>
-          </header>
-          <article>
-            <DrawerItem name="Type">{s.kind}</DrawerItem>
-            <DrawerItem name="URL">{s.spec.url}</DrawerItem>
-            <DrawerItem name="Ref">{s.spec.ref.branch || s.spec.ref.tag}</DrawerItem>
-            <DrawerItem name="Interval">{s.spec.interval}</DrawerItem>
-            <DrawerItem name="Status">{s.status.conditions.find((c: any) => c.type === 'Ready').message}</DrawerItem>
-          </article>
-        </div>))
-        }
-        {helmRepositoryStore.items.map(s => (<div className={['fluxPanel', 'column', getStatusClassName(s)].join(' ')}>
-          <header>
-            <h3><a onClick={e => { e.preventDefault(); Renderer.Navigation.showDetails(s.selfLink) }}>{s.metadata.name}</a></h3>
-          </header>
-          <article>
-            <DrawerItem name="Type">{s.kind}</DrawerItem>
-            <DrawerItem name="URL">{s.spec.url}</DrawerItem>
-            <DrawerItem name="Interval">{s.spec.interval}</DrawerItem>
-            <DrawerItem name="Status">{s.status.conditions.find((c: any) => c.type === 'Ready').message}</DrawerItem>
-          </article>
-        </div>))
-        }
-        {helmChartStore.items.map(s => (<div className={['fluxPanel', 'column', getStatusClassName(s)].join(' ')}>
-          <header>
-            <h3><a onClick={e => { e.preventDefault(); Renderer.Navigation.showDetails(s.selfLink) }}>{s.metadata.name}</a></h3>
-          </header>
-          <article>
-            <DrawerItem name="Type">{s.kind}</DrawerItem>
-            <DrawerItem name="Chart">{s.spec.chart}</DrawerItem>
-            <DrawerItem name="Version">{s.spec.version}</DrawerItem>
-            <DrawerItem name="Interval">{s.spec.interval}</DrawerItem>
-            <DrawerItem name="Status">{s.status.conditions.find((c: any) => c.type === 'Ready').message}</DrawerItem>
-          </article>
-        </div>))
-        }
-        {bucketStore.items.map(s => (<div className={['fluxPanel', 'column', getStatusClassName(s)].join(' ')}>
-          <header>
-            <h3><a onClick={e => { e.preventDefault(); Renderer.Navigation.showDetails(s.selfLink) }}>{s.metadata.name}</a></h3>
-          </header>
-          <article>
-            <DrawerItem name="Type">{s.kind}</DrawerItem>
-            <DrawerItem name="URL">{s.spec.url}</DrawerItem>
-            <DrawerItem name="Interval">{s.spec.interval}</DrawerItem>
-            <DrawerItem name="Status">{s.status.conditions.find((c: any) => c.type === 'Ready').message}</DrawerItem>
-          </article>
-        </div>))
-        }
-      </div>
+            <div className="grid flex FluxWorkloads pb-3">
+                {this.getChart('Kustomizations', kustomizationStore.items)}
+                {this.getChart('Helm releases', helmReleaseStore.items)}
 
-      <Renderer.Component.KubeObjectListLayout
-        className="Events" store={fluxEventsStore}
-        tableProps={{
-          sortSyncWithUrl: false,
-          sortByDefault: {
-            sortBy: columnId.lastSeen,
-            orderBy: 'asc',
-          }
-        }}
-        isSelectable={false}
-        getItems={() => fluxEventsStore
-          .contextItems
-          .filter(onlyFluxEvents)
-          .sort((a, b) => (new Date(b.lastTimestamp).getTime() || 0) - (new Date(a.lastTimestamp).getTime() || 0))}
+                {this.getChart('Git Repositories', gitRepositoryStore.items)}
+                {this.getChart('Helm Repositories', helmRepositoryStore.items)}
+                {this.getChart('Helm Charts', helmChartStore.items)}
+                {this.getChart('Buckets', bucketStore.items)}
+            </div>
 
-        sortingCallbacks={{
-          [columnId.namespace]: event => event.getNs(),
-          [columnId.type]: event => event.type,
-          [columnId.object]: event => event.involvedObject.name,
-          [columnId.count]: event => event.count,
-          [columnId.age]: event => -event.getCreationTimestamp(),
-          [columnId.lastSeen]: event => event.lastTimestamp ? -new Date(event.lastTimestamp).getTime() : 0,
-        }}
-        searchFilters={[
-          event => event.getSearchFields(),
-          event => event.message,
-          event => event.getSource(),
-          event => event.involvedObject.name,
-        ]}
-        renderHeaderTitle="Flux Events"
-        renderTableHeader={[
-          { title: "Type", className: "type", sortBy: columnId.type, id: columnId.type },
-          { title: "Message", className: "message", id: columnId.message },
-          { title: "Namespace", className: "namespace", sortBy: columnId.namespace, id: columnId.namespace },
-          { title: "Involved Object", className: "object", sortBy: columnId.object, id: columnId.object },
-          { title: "Source", className: "source", id: columnId.source },
-          { title: "Count", className: "count", sortBy: columnId.count, id: columnId.count },
-          { title: "Age", className: "age", sortBy: columnId.age, id: columnId.age },
-          { title: "Last Seen", className: "last-seen", sortBy: columnId.lastSeen, id: columnId.lastSeen },
-        ]}
-        renderTableContents={event => {
-          const { involvedObject, type, message } = event;
-          const tooltipId = `message-${event.getId()}`;
-          const isWarning = event.isWarning();
+            <h2>Applications</h2>
+            <div className='grid flex gaps mb-3 FluxPanels'>
+                {kustomizationStore.items.map(k => (<div className={['fluxPanel', 'column', getStatusClassName(k)].join(' ')}>
+                <header>
+                    <h3>
+                    <a onClick={e => {
+                        e.preventDefault();
+                        Renderer.Navigation.createPageParam({
+                        name: "kube-details",
+                        defaultValue: k.selfLink,
+                        })
+                        Renderer.Navigation.showDetails(k.selfLink);
+                    }}>{k.metadata.name}</a>
+                    </h3>
+                </header>
+                <article>
+                    <DrawerItem name="Type">{k.kind}</DrawerItem>
+                    <DrawerItem name="Source">{k.spec.sourceRef.kind}:{k.spec.sourceRef.name}</DrawerItem>
+                    <DrawerItem name="Path">{k.spec.path}</DrawerItem>
+                    <DrawerItem name="Interval">{k.spec.interval}</DrawerItem>
+                    <DrawerItem name="Status">{k.status.conditions.find((c: any) => c.type === 'Ready').message}</DrawerItem>
+                </article>
+                </div>))
+                }
+                {
+                helmReleaseStore.items.map(h => (<div className={['fluxPanel', 'column', getStatusClassName(h)].join(' ')}>
+                    <header>
+                    <h3><a onClick={e => { e.preventDefault(); Renderer.Navigation.showDetails(h.selfLink) }}>{h.metadata.name}</a></h3>
+                    </header>
+                    <article>
+                    <DrawerItem name="Type">{h.kind}</DrawerItem>
+                    <DrawerItem name="Source">{h.spec.chart.spec.sourceRef.kind}:{h.spec.chart.spec.sourceRef.name}</DrawerItem>
+                    <DrawerItem name="Chart">{h.spec.chart.spec.chart}</DrawerItem>
+                    <DrawerItem name="Version">{h.spec.chart.spec.version}</DrawerItem>
+                    <DrawerItem name="Interval">{h.spec.interval}</DrawerItem>
+                    <DrawerItem name="Status">{h.status.conditions.find((c: any) => c.type === 'Ready').message}</DrawerItem>
+                    </article>
+                </div>))
+                }
+            </div >
 
-          return [
-            type,
-            {
-              className: isWarning ? "warning" : "",
-              title: (
-                <>
-                  <span id={tooltipId}>{message}</span>
-                  <Tooltip targetId={tooltipId} formatters={{ narrow: true, warning: isWarning }}>
-                    {message}
-                  </Tooltip>
-                </>
-              ),
-            },
-            event.getNs(),
-            <>{`${involvedObject.kind}: ${involvedObject.name}`}</>,
-            // </Link>,
-            event.getSource(),
-            event.count,
-            <KubeEventAge timestamp={event.getCreationTimestamp()} />,
-            <KubeEventAge timestamp={new Date(event.lastTimestamp).getTime()} />,
-          ];
-        }}
-      />
+            <h2>Sources</h2>
+            <div className='grid flex gaps mb-3 FluxPanels'>
+                {gitRepositoryStore.items.map(s => (<div className={['fluxPanel', 'column', getStatusClassName(s)].join(' ')}>
+                <header>
+                    <h3><a onClick={e => {
+                    e.preventDefault();
+                    Renderer.Navigation.createPageParam({
+                        name: "kube-details",
+                        defaultValue: s.selfLink,
+                    })
+                    Renderer.Navigation.showDetails(s.selfLink);
+                    }}>{s.metadata.name}</a></h3>
+                </header>
+                <article>
+                    <DrawerItem name="Type">{s.kind}</DrawerItem>
+                    <DrawerItem name="URL">{s.spec.url}</DrawerItem>
+                    <DrawerItem name="Ref">{s.spec.ref.branch || s.spec.ref.tag}</DrawerItem>
+                    <DrawerItem name="Interval">{s.spec.interval}</DrawerItem>
+                    <DrawerItem name="Status">{s.status.conditions.find((c: any) => c.type === 'Ready').message}</DrawerItem>
+                </article>
+                </div>))
+                }
+                {helmRepositoryStore.items.map(s => (<div className={['fluxPanel', 'column', getStatusClassName(s)].join(' ')}>
+                <header>
+                    <h3><a onClick={e => { e.preventDefault(); Renderer.Navigation.showDetails(s.selfLink) }}>{s.metadata.name}</a></h3>
+                </header>
+                <article>
+                    <DrawerItem name="Type">{s.kind}</DrawerItem>
+                    <DrawerItem name="URL">{s.spec.url}</DrawerItem>
+                    <DrawerItem name="Interval">{s.spec.interval}</DrawerItem>
+                    <DrawerItem name="Status">{s.status.conditions.find((c: any) => c.type === 'Ready').message}</DrawerItem>
+                </article>
+                </div>))
+                }
+                {helmChartStore.items.map(s => (<div className={['fluxPanel', 'column', getStatusClassName(s)].join(' ')}>
+                <header>
+                    <h3><a onClick={e => { e.preventDefault(); Renderer.Navigation.showDetails(s.selfLink) }}>{s.metadata.name}</a></h3>
+                </header>
+                <article>
+                    <DrawerItem name="Type">{s.kind}</DrawerItem>
+                    <DrawerItem name="Chart">{s.spec.chart}</DrawerItem>
+                    <DrawerItem name="Version">{s.spec.version}</DrawerItem>
+                    <DrawerItem name="Interval">{s.spec.interval}</DrawerItem>
+                    <DrawerItem name="Status">{s.status.conditions.find((c: any) => c.type === 'Ready').message}</DrawerItem>
+                </article>
+                </div>))
+                }
+                {bucketStore.items.map(s => (<div className={['fluxPanel', 'column', getStatusClassName(s)].join(' ')}>
+                <header>
+                    <h3><a onClick={e => { e.preventDefault(); Renderer.Navigation.showDetails(s.selfLink) }}>{s.metadata.name}</a></h3>
+                </header>
+                <article>
+                    <DrawerItem name="Type">{s.kind}</DrawerItem>
+                    <DrawerItem name="URL">{s.spec.url}</DrawerItem>
+                    <DrawerItem name="Interval">{s.spec.interval}</DrawerItem>
+                    <DrawerItem name="Status">{s.status.conditions.find((c: any) => c.type === 'Ready').message}</DrawerItem>
+                </article>
+                </div>))
+                }
+            </div>
 
+            <Renderer.Component.KubeObjectListLayout
+                className="Events" store={fluxEventsStore}
+                tableProps={{
+                sortSyncWithUrl: false,
+                sortByDefault: {
+                    sortBy: columnId.lastSeen,
+                    orderBy: 'asc',
+                }
+                }}
+                isSelectable={false}
+                getItems={() => fluxEventsStore
+                .contextItems
+                .filter(onlyFluxEvents)
+                .sort((a, b) => (new Date(b.lastTimestamp).getTime() || 0) - (new Date(a.lastTimestamp).getTime() || 0))}
+
+                sortingCallbacks={{
+                [columnId.namespace]: event => event.getNs(),
+                [columnId.type]: event => event.type,
+                [columnId.object]: event => event.involvedObject.name,
+                [columnId.count]: event => event.count,
+                [columnId.age]: event => -event.getCreationTimestamp(),
+                [columnId.lastSeen]: event => event.lastTimestamp ? -new Date(event.lastTimestamp).getTime() : 0,
+                }}
+                searchFilters={[
+                event => event.getSearchFields(),
+                event => event.message,
+                event => event.getSource(),
+                event => event.involvedObject.name,
+                ]}
+                renderHeaderTitle="Flux Events"
+                renderTableHeader={[
+                { title: "Type", className: "type", sortBy: columnId.type, id: columnId.type },
+                { title: "Message", className: "message", id: columnId.message },
+                { title: "Namespace", className: "namespace", sortBy: columnId.namespace, id: columnId.namespace },
+                { title: "Involved Object", className: "object", sortBy: columnId.object, id: columnId.object },
+                { title: "Source", className: "source", id: columnId.source },
+                { title: "Count", className: "count", sortBy: columnId.count, id: columnId.count },
+                { title: "Age", className: "age", sortBy: columnId.age, id: columnId.age },
+                { title: "Last Seen", className: "last-seen", sortBy: columnId.lastSeen, id: columnId.lastSeen },
+                ]}
+                renderTableContents={event => {
+                const { involvedObject, type, message } = event;
+                const tooltipId = `message-${event.getId()}`;
+                const isWarning = event.isWarning();
+
+                return [
+                    type,
+                    {
+                    className: isWarning ? "warning" : "",
+                    title: (
+                        <>
+                        <span id={tooltipId}>{message}</span>
+                        <Tooltip targetId={tooltipId} formatters={{ narrow: true, warning: isWarning }}>
+                            {message}
+                        </Tooltip>
+                        </>
+                    ),
+                    },
+                    event.getNs(),
+                    <>{`${involvedObject.kind}: ${involvedObject.name}`}</>,
+                    // </Link>,
+                    event.getSource(),
+                    event.count,
+                    <KubeEventAge timestamp={event.getCreationTimestamp()} />,
+                    <KubeEventAge timestamp={new Date(event.lastTimestamp).getTime()} />,
+                ];
+                }}
+            />
+        </div>
     </Renderer.Component.TabLayout >
-
   }
 }
 
